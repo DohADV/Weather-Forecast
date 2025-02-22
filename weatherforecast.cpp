@@ -26,7 +26,7 @@ void WeatherForecast::callWeatherApi() {
     QUrlQuery query;
     query.addQueryItem("q",ui->lineEdit->text());
     query.addQueryItem("units","metric");
-    query.addQueryItem("appid", "eadfc5c80b4489360e41c8efba3ad396");
+    query.addQueryItem("appid", "apikey");
     url.setQuery(query);
 
     QNetworkRequest request(url);
