@@ -1,0 +1,22 @@
+{
+	"BUILD_DIR" : "C:/Users/ghita/Documents/WeatherForecast/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug/WeatherForecast_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/ghita/Documents/WeatherForecast/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/ghita/Documents/WeatherForecast/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/ghita/Documents/WeatherForecast",
+	"CMAKE_SOURCE_DIR" : "C:/Users/ghita/Documents/WeatherForecast",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "C:/Users/ghita/Documents/WeatherForecast/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug/WeatherForecast_autogen/include",
+	"INPUTS" : [ "C:/Users/ghita/Documents/WeatherForecast/resources/icons/01d.png" ],
+	"LOCK_FILE" : "C:/Users/ghita/Documents/WeatherForecast/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug/CMakeFiles/WeatherForecast_autogen.dir/AutoRcc_resources_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "D:/Qt/6.8.2/mingw_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/ghita/Documents/WeatherForecast/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug/CMakeFiles/WeatherForecast_autogen.dir/AutoRcc_resources_EWIEGA46WW_Used.txt",
+	"SOURCE" : "C:/Users/ghita/Documents/WeatherForecast/resources.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}
