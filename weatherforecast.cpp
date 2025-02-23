@@ -6,6 +6,8 @@
 #include <qlistwidget.h>
 #include <qdatetime.h>
 #include <QDate>
+#include <qtablewidget.h>
+
 WeatherForecast::WeatherForecast(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::WeatherForecast)
@@ -13,6 +15,19 @@ WeatherForecast::WeatherForecast(QWidget *parent)
     ui->setupUi(this);
     manager = new QNetworkAccessManager(this);
     connect(ui->pushButton, &QPushButton::clicked, this, &WeatherForecast::callWeatherApi);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &WeatherForecast::callWeatherApi);
+
+    QFont font;
+    font.setPointSize(16);
+    qApp->setFont(font);
+
+    ui->tableWidget->setColumnCount(4);
+    QStringList headers = {"Day", "Hour", "Temp (°C)", ""};
+    ui->tableWidget->setHorizontalHeaderLabels(headers);
+    ui->tableWidget->verticalHeader()->setVisible(false);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
 }
 
 
@@ -22,6 +37,9 @@ WeatherForecast::~WeatherForecast()
 }
 
 void WeatherForecast::callWeatherApi() {
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(0);
+
     QUrl url("https://api.openweathermap.org/data/2.5/forecast");
     QUrlQuery query;
     query.addQueryItem("q",ui->lineEdit->text());
@@ -43,14 +61,12 @@ void WeatherForecast::onFinishedWeather(QNetworkReply *reply) {
 
     if (reply->error() != QNetworkReply::NoError) {
         qDebug() << "Error: " << reply->errorString();
-        ui->temperature->setText("Error fetching weather data");
     } else {
         QByteArray data = reply->readAll();
 
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         if (!jsonDoc.isObject()) {
             qDebug() << "Invalid JSON format!";
-            ui->temperature->setText("Invalid JSON format");
             return;
         }
 
@@ -67,9 +83,6 @@ void WeatherForecast::onFinishedWeather(QNetworkReply *reply) {
                 double temperature = currentWeather["temp"].toDouble();
                 QString temp = QString::number(temperature);
                 QLabel *label = new QLabel(temp,itemWidget);
-                ui->temperature->setText("Temperature: " + QString::number(temperature, 'f', 2) + "°C");
-            } else {
-                ui->temperature->setText("Temperature data missing");
             }
         }
 
@@ -78,8 +91,18 @@ void WeatherForecast::onFinishedWeather(QNetworkReply *reply) {
 }
 
 void WeatherForecast::addWeather(QJsonObject jsonObj){
-    QWidget *itemWidget = new QWidget;
-    QHBoxLayout *layout = new QHBoxLayout(itemWidget);
+    QWidget *dayWidget = new QWidget;
+    QWidget *hourWidget = new QWidget;
+    QWidget *tempWidget = new QWidget;
+    QWidget *iconWidget = new QWidget;
+    QHBoxLayout *dayLayout = new QHBoxLayout(dayWidget);
+    dayLayout->setAlignment(Qt::AlignCenter);
+    QHBoxLayout *hourLayout = new QHBoxLayout(hourWidget);
+    hourLayout->setAlignment(Qt::AlignCenter);
+    QHBoxLayout *tempLayout = new QHBoxLayout(tempWidget);
+    tempLayout->setAlignment(Qt::AlignCenter);
+    QHBoxLayout *iconLayout = new QHBoxLayout(iconWidget);
+    iconLayout->setAlignment(Qt::AlignCenter);
 
     QJsonObject mainObj = jsonObj["main"].toObject();
 
@@ -104,20 +127,20 @@ void WeatherForecast::addWeather(QJsonObject jsonObj){
     int sDay = date.dayOfWeek();
     QString weekDay = getDay(sDay);
 
-    QLabel *labelDay = new QLabel(weekDay,itemWidget);
-    layout->addWidget(labelDay);
-    QLabel *labelHour = new QLabel(hour,itemWidget);
-    layout->addWidget(labelHour);
+    QLabel *labelDay = new QLabel(weekDay,dayWidget);
+    dayLayout->addWidget(labelDay);
+    QLabel *labelHour = new QLabel(hour,hourWidget);
+    hourLayout->addWidget(labelHour);
 
     qDebug() << weekDay << hour;
 
     double temperature = mainObj["temp"].toDouble();
     QString temp = QString::number(temperature);
     qDebug() << temp;
-    QLabel *label = new QLabel(temp,itemWidget);
-    layout->addWidget(label);
+    QLabel *label = new QLabel(temp,tempWidget);
+    tempLayout->addWidget(label);
 
-    QLabel *iconLabel = new QLabel(itemWidget);
+    QLabel *iconLabel = new QLabel(iconWidget);
     QString icon;
     QJsonArray weatherArray = jsonObj["weather"].toArray();
     if (!weatherArray.isEmpty()) {
@@ -128,75 +151,25 @@ void WeatherForecast::addWeather(QJsonObject jsonObj){
 
         QPixmap pix(iconPath);
         iconLabel->setPixmap(pix);
-        layout->addWidget(iconLabel);
+        iconLayout->addWidget(iconLabel);
     }
 
-    itemWidget->setLayout(layout);
-    //itemWidget->setStyleSheet("background-color: white;");
+    iconWidget->setLayout(iconLayout);
 
-    QListWidgetItem *item = new QListWidgetItem(ui->listWidget);
-    ui->listWidget->addItem(item);
+    int row = ui->tableWidget->rowCount();
+    ui->tableWidget->insertRow(row);
 
-    ui->listWidget->setItemWidget(item,itemWidget);
-    ui->listWidget->setStyleSheet("QListWidget::item { height: 75px; }");
-    //ui->listWidget->setStyleSheet("font-size: 10px;");
-    qDebug() << "Widget count in layout: " << ui->listWidget->count();
-    qDebug() << Qt::endl;
+    dayWidget->setLayout(dayLayout);
+    ui->tableWidget->setCellWidget(row, 0, dayWidget);
 
-    QString iconPath = QCoreApplication::applicationDirPath() + "/resources/icons/01d.png";
-    qDebug() << "Resolved path: " << iconPath;
+    hourWidget->setLayout(hourLayout);
+    ui->tableWidget->setCellWidget(row, 1, hourWidget);
 
-    QPixmap pix(iconPath);
-    if (pix.isNull()) {
-        qDebug() << "Image file not found at: " << iconPath;
-    } else {
-        qDebug() << "Image loaded successfully from: " << iconPath;
-    }
-}
+    tempWidget->setLayout(tempLayout);
+    ui->tableWidget->setCellWidget(row, 2, tempWidget);
+    ui->tableWidget->setCellWidget(row, 3, iconWidget);
+    ui->tableWidget->setStyleSheet("QTableWidget::item { height: 80px; }");
 
-QString  WeatherForecast::getPath(QString id){
-    if (id == "01d") return QCoreApplication::applicationDirPath() + "/resources/icons/01d.png";
-    else if (id == "01n") return QCoreApplication::applicationDirPath() + "/resources/icons/01n.png";
-    else if (id == "02d") return QCoreApplication::applicationDirPath() + "/resources/icons/02d.png";
-    else if (id == "02n") return QCoreApplication::applicationDirPath() + "/resources/icons/02n.png";
-    else if (id == "03d") return QCoreApplication::applicationDirPath() + "/resources/icons/03d.png";
-    else if (id == "03n") return QCoreApplication::applicationDirPath() + "/resources/icons/03n.png";
-    else if (id == "04d") return QCoreApplication::applicationDirPath() + "/resources/icons/04d.png";
-    else if (id == "04n") return QCoreApplication::applicationDirPath() + "/resources/icons/04n.png";
-    else if (id == "09d") return QCoreApplication::applicationDirPath() + "/resources/icons/09d.png";
-    else if (id == "09n") return QCoreApplication::applicationDirPath() + "/resources/icons/09n.png";
-    else if (id == "10d") return QCoreApplication::applicationDirPath() + "/resources/icons/10d.png";
-    else if (id == "10n") return QCoreApplication::applicationDirPath() + "/resources/icons/10n.png";
-    else if (id == "11d") return QCoreApplication::applicationDirPath() + "/resources/icons/11d.png";
-    else if (id == "11n") return QCoreApplication::applicationDirPath() + "/resources/icons/11n.png";
-    else if (id == "13d") return QCoreApplication::applicationDirPath() + "/resources/icons/13d.png";
-    else if (id == "13n") return QCoreApplication::applicationDirPath() + "/resources/icons/13n.png";
-    else if (id == "50d") return QCoreApplication::applicationDirPath() + "/resources/icons/50d.png";
-    return "icson/50n.png";
-}
+    qDebug() << "Row count in table: " << ui->tableWidget->rowCount();
 
-QString WeatherForecast::getDay(int day){
-    switch (day){
-        case 1:{
-            return "Mon";
-        }
-        case 2:{
-            return "Tue";
-        }
-        case 3:{
-            return "Wed";
-        }
-        case 4:{
-            return "Thu";
-        }
-        case 5:{
-            return "Fri";
-        }
-        case 6:{
-            return "Sat";
-        }
-        case 7:{
-            return "Sun";
-        }
-    }
 }

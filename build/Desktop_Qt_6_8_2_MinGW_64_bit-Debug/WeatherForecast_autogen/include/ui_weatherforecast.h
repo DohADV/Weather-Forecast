@@ -11,12 +11,13 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -27,8 +28,7 @@ public:
     QWidget *centralwidget;
     QLineEdit *lineEdit;
     QPushButton *pushButton;
-    QLineEdit *temperature;
-    QListWidget *listWidget;
+    QTableWidget *tableWidget;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -36,7 +36,7 @@ public:
     {
         if (WeatherForecast->objectName().isEmpty())
             WeatherForecast->setObjectName("WeatherForecast");
-        WeatherForecast->resize(800, 600);
+        WeatherForecast->resize(780, 507);
         centralwidget = new QWidget(WeatherForecast);
         centralwidget->setObjectName("centralwidget");
         lineEdit = new QLineEdit(centralwidget);
@@ -48,19 +48,14 @@ public:
         lineEdit->setToolTipDuration(-3);
         pushButton = new QPushButton(centralwidget);
         pushButton->setObjectName("pushButton");
-        pushButton->setGeometry(QRect(390, 10, 121, 51));
-        temperature = new QLineEdit(centralwidget);
-        temperature->setObjectName("temperature");
-        temperature->setGeometry(QRect(20, 460, 311, 51));
-        temperature->setFont(font);
-        listWidget = new QListWidget(centralwidget);
-        listWidget->setObjectName("listWidget");
-        listWidget->setGeometry(QRect(10, 80, 741, 361));
-        listWidget->setFont(font);
+        pushButton->setGeometry(QRect(340, 10, 121, 51));
+        tableWidget = new QTableWidget(centralwidget);
+        tableWidget->setObjectName("tableWidget");
+        tableWidget->setGeometry(QRect(10, 90, 751, 361));
         WeatherForecast->setCentralWidget(centralwidget);
         menubar = new QMenuBar(WeatherForecast);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 25));
+        menubar->setGeometry(QRect(0, 0, 780, 25));
         WeatherForecast->setMenuBar(menubar);
         statusbar = new QStatusBar(WeatherForecast);
         statusbar->setObjectName("statusbar");
@@ -78,8 +73,7 @@ public:
         lineEdit->setToolTip(QCoreApplication::translate("WeatherForecast", "meow", nullptr));
 #endif // QT_CONFIG(tooltip)
         lineEdit->setPlaceholderText(QCoreApplication::translate("WeatherForecast", "Enter a city", nullptr));
-        pushButton->setText(QCoreApplication::translate("WeatherForecast", "Seach", nullptr));
-        temperature->setPlaceholderText(QCoreApplication::translate("WeatherForecast", "Temperature", nullptr));
+        pushButton->setText(QCoreApplication::translate("WeatherForecast", "Search", nullptr));
     } // retranslateUi
 
 };

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>780</width>
+    <height>507</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,47 +41,24 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>340</x>
       <y>10</y>
       <width>121</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Seach</string>
+     <string>Search</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="temperature">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>460</y>
-      <width>311</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
-    <property name="placeholderText">
-     <string>Temperature</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
-      <width>741</width>
+      <y>90</y>
+      <width>751</width>
       <height>361</height>
      </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-     </font>
     </property>
    </widget>
   </widget>
@@ -90,7 +67,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>780</width>
      <height>25</height>
     </rect>
    </property>
